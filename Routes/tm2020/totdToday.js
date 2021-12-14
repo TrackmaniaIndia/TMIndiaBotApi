@@ -13,7 +13,6 @@ module.exports.handle = (app) => {
         const totd = await client.totd.get(new Date())
         let map = await totd.map();
         map = map._data
-        map.name = client.formatTMText(map.name)
 
         map.name = client.formatTMText(map.name)
 
