@@ -1,8 +1,9 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const cheerio = require('cheerio')
 const cheerioTableparser = require('cheerio-tableparser');
-const cache = require('memory-cache')
 const GBX = require('gbx')
+const cache = require('memory-cache')
+const cb = require('../../cacheTimeoutCb.js')
 
 function getValuesFromTable(selector, $) {
     let table = $(selector).parsetable(false, false, false); // return data as html    
@@ -56,6 +57,12 @@ module.exports.handle = (app) => {
     app.get("/tmnf/map/:id", async (req, res) => {
         const id = req.params.id;
 
+        const cacheEntry = cache.get(`tmnf:map:${id}`)
+        if(cacheEntry !== null) {
+            const data = JSON.parse(cacheEntry)
+            return res.send(data);
+        }
+
         const response = await fetch('https://tmnforever.tm-exchange.com/trackshow/' + id)
         const html = await response.text()
 
@@ -95,6 +102,7 @@ module.exports.handle = (app) => {
             }
         }
 
+        cache.put(`tmnf:map:${id}`, JSON.stringify(track), 86400000, cb) // 1 day
 
         res.send(track)
     })
