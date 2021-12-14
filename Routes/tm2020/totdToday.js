@@ -5,7 +5,7 @@ const cb = require('../../cacheTimeoutCb.js')
 module.exports.handle = (app) => {
     app.get('/tm2020/totd/latest', async (req, res) => {
         const cacheEntry = cache.get(`tm2020:totd`)
-        if(cacheEntry !== null) {
+        if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }

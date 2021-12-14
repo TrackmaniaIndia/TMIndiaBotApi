@@ -7,7 +7,7 @@ module.exports.handle = (app) => {
         const accId = req.params.id;
 
         const cacheEntry = cache.get(`tm2020:player:${accId}:matchmaking`)
-        if(cacheEntry !== null) {
+        if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }
@@ -15,10 +15,10 @@ module.exports.handle = (app) => {
         let player;
         try {
             player = await client.players.get(accId);
-        } catch(e) {
-            if(e === "Invalid account ID.") {
+        } catch (e) {
+            if (e === "Invalid account ID.") {
                 res.status(400);
-                return res.send({err: "INVALID_ACCOUNT_ID", msg: e})
+                return res.send({ err: "INVALID_ACCOUNT_ID", msg: e })
             }
         }
 
@@ -33,7 +33,7 @@ module.exports.handle = (app) => {
         const data = matchmaking._data;
         data.history = history;
 
-        cache.put(`tm2020:player:${accId}:matchmaking`, 86400000, cb) // 1day
+        cache.put(`tm2020:player:${accId}:matchmaking`, JSON.stringify(data), 86400000, cb) // 1day
         res.send(data);
     });
 };

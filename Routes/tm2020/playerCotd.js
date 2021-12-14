@@ -3,42 +3,37 @@ const cache = require('memory-cache');
 const cb = require('../../cacheTimeoutCb.js')
 
 module.exports.handle = (app) => {
-    app.get("/tm2020/player/:id/cotd/:page", async (req, res) => {
+    app.get("/tm2020/player/:id/cotd/", async (req, res) => {
         const accId = req.params.id;
-        const page = req.params.page;
 
         const cacheEntry = cache.get(`tm2020:player:${accId}:cotd`)
-        if(cacheEntry !== null) {
+        if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }
 
-        if (page !== undefined && isNaN(page)) {
-            res.status(400);
-            res.json({
-                error: "INVALID_PAGE",
-                msg: "An invalid page number was provided",
-            });
+        const player_data = await client.players.get(accId);
+        page = 0
+        let next_page = await player_data.cotd(page);
+        let player_cotd_data = next_page
+
+        let all_cotds = ""
+
+        while (JSON.stringify(next_page._data.cotds) != "[]") {
+            all_cotds += JSON.stringify(next_page._data.cotds);
+            page++;
+            next_page = await player_data.cotd(page);
         }
+        all_cotds = all_cotds.replaceAll('][', ',')
+        // console.log("Requests Remaining: " + client.ratelimit.remaining)
 
-        const searchResults = await client.players.search(accId);
-        if (searchResults[0] === undefined) {
-            res.status(400);
-            res.json({
-                error: "INVALID_USERNAME",
-                msg: "An invalid username was provided",
-            });
-            return;
-        }
+        player_cotd_data._data.cotds = JSON.parse(all_cotds)
 
-        const player = await client.players.get(searchResults[0].id);
-        const cotd = await player.cotd(page);
+        const cotdData = player_cotd_data._data
 
-        const cotdData = cotd._data;
-
-        cache.put(`tm2020:player:${accId}:cotd`, 3600000, cb) // 1 hour
+        cache.put(`tm2020:player:${accId}:cotd`, JSON.stringify(cotdData), 7200000, cb) // 2 hours
         res.send(cotdData);
     });
 };
 
-module.exports.registerdRoutes = ["/tm2020/player/:id/cotd/:page"];
+module.exports.registerdRoutes = ["/tm2020/player/:id/cotd/"];
