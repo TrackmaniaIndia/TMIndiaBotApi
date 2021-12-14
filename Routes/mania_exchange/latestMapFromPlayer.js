@@ -1,5 +1,6 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const cache = require('memory-cache')
+const cb = require('../../cacheTimeoutCb.js')
 
 module.exports.handle = (app) => {
     app.get("/mx/player/:username/maps/latest", async (req, res) => {
@@ -18,7 +19,7 @@ module.exports.handle = (app) => {
             return res.status(400).send({ error: "NO_MAPS", msg: "User hasnt uploaded any maps"})
         }
 
-        cache.put(`player:${username}:maps`, JSON.stringify(data), 86400000) // delete entry after 1 day
+        cache.put(`player:${username}:maps`, JSON.stringify(data), 86400000, cb) // delete entry after 1 day
         res.send(data.results[0])
     })
 }
