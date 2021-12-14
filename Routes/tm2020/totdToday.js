@@ -15,6 +15,8 @@ module.exports.handle = (app) => {
         map = map._data
         map.name = client.formatTMText(map.name)
 
+        map.name = client.formatTMText(map.name)
+
         cache.put(`tm2020:totd`, JSON.stringify(map), 3600000, cb) // 1 hour
         res.send(map)
     })
