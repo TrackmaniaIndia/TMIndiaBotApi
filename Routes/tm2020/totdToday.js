@@ -13,8 +13,9 @@ module.exports.handle = (app) => {
         const totd = await client.totd.get(new Date())
         let map = await totd.map();
         map = map._data
+        map.name = client.formatTMText(map.name);
 
-        cache.put(`tm2020:totd`, JSON.stringify(data), 3600000, cb) // 1 hour
+        cache.put(`tm2020:totd`, JSON.stringify(map), 3600000, cb) // 1 hour
         res.send(map)
     })
 };
