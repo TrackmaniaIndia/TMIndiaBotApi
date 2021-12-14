@@ -8,7 +8,7 @@ module.exports.handle = (app) => {
         const page = req.params.page;
 
         const cacheEntry = cache.get(`tm2020:player:${accId}:cotd`)
-        if(cacheEntry !== null) {
+        if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }
@@ -36,7 +36,7 @@ module.exports.handle = (app) => {
 
         const cotdData = cotd._data;
 
-        cache.put(`tm2020:player:${accId}:cotd`, 3600000, cb) // 1 hour
+        cache.put(`tm2020:player:${accId}:cotd`, JSON.stringify(cotdData), 3600000, cb) // 1 hour
         res.send(cotdData);
     });
 };

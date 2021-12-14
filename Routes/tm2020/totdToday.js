@@ -5,7 +5,7 @@ const cb = require('../../cacheTimeoutCb.js')
 module.exports.handle = (app) => {
     app.get('/tm2020/totd/latest', async (req, res) => {
         const cacheEntry = cache.get(`tm2020:totd`)
-        if(cacheEntry !== null) {
+        if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }
@@ -14,7 +14,7 @@ module.exports.handle = (app) => {
         let map = await totd.map();
         map = map._data
 
-        cache.put(`tm2020:totd`, JSON.stringify(data), 3600000, cb) // 1 hour
+        cache.put(`tm2020:totd`, JSON.stringify(map), 3600000, cb) // 1 hour
         res.send(map)
     })
 };
