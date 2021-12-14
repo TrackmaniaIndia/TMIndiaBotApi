@@ -3,30 +3,30 @@ const cache = require('memory-cache');
 const cb = require('../../cacheTimeoutCb.js')
 
 module.exports.handle = (app) => {
-    app.get('/tm2020/player/:name', async (req, res) => {
-        const accName = req.params.name;
+    app.get('/tm2020/player/:id', async (req, res) => {
+        const accId = req.params.id;
 
-        const cacheEntry = cache.get(`tm2020:player:${accName}`)
+        const cacheEntry = cache.get(`tm2020:player:${accId}`)
         if (cacheEntry !== null) {
             const data = JSON.parse(cacheEntry);
             return res.send(data);
         }
 
-        const searchResults = await client.players.search(accName);
-        if (searchResults[0] === undefined) {
-            res.status(400);
-            res.json({
-                error: "INVALID_USERNAME",
-                msg: "An invalid username was provided",
-            });
-            return;
-        }
+        // const searchResults = await client.players.search(accId);
+        // if (searchResults[0] === undefined) {
+        //     res.status(400);
+        //     res.json({
+        //         error: "INVALID_USERNAME",
+        //         msg: "An invalid username was provided",
+        //     });
+        //     return;
+        // }
 
-        const player = await client.players.get(searchResults[0].id);
+        const player = await client.players.get(accId);
         const data = player._data
         data.clubtagraw = client.formatTMText(data.clubtag)
 
-        cache.put(`tm2020:player:${accName}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
+        cache.put(`tm2020:player:${accId}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
         res.send(data)
     })
 };
