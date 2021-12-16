@@ -81,7 +81,11 @@ module.exports.handle = (app) => {
                 released: infoVals[4],
                 rating: infoVals[6],
                 medals,
-                screenshot: `https://tmnforever.tm-exchange.com/getclean.aspx?action=trackscreenscreens&id=${id}&screentype=0`
+                screenshot: `https://tmnforever.tm-exchange.com/getclean.aspx?action=trackscreenscreens&id=${id}&screentype=0`,
+                urls: {
+                    download: `https://tmnforever.tm-exchange.com/tmupget.aspx?action=trackgbx&id=${id}`,
+                    open: `tmtp:///:tmx:download?site=tmnforever&id=${id}`
+                }
             }, 
             details: {
                 gameVersion: detailsVals[0],
