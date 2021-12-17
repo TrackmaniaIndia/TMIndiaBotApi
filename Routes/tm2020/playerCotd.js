@@ -1,6 +1,7 @@
 const { client } = require("../../tmio.js");
 const cache = require('memory-cache');
 const cb = require('../../cacheTimeoutCb.js')
+import chalk from 'chalk';
 
 module.exports.handle = (app) => {
     app.get("/tm2020/player/:id/cotd/", async (req, res) => {
@@ -33,6 +34,8 @@ module.exports.handle = (app) => {
 
         cache.put(`tm2020:player:${accId}:cotd`, JSON.stringify(cotdData), 7200000, cb) // 2 hours
         res.send(cotdData);
+
+        console.log(`${chalk.redBright(client.ratelimit.remaining)}/${chalk.redBright(client.ratelimit.limit)}`)
     });
 };
 
