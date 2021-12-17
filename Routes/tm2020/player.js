@@ -24,7 +24,7 @@ module.exports.handle = (app) => {
 
         const player = await client.players.get(accId);
         const data = player._data
-        data.clubtagraw = client.formatTMText(data.clubtag)
+        if (data.clubtag) data.clubtagraw = client.formatTMText(data.clubtag)
 
         cache.put(`tm2020:player:${accId}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
         res.send(data)
