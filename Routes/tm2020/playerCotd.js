@@ -15,8 +15,9 @@ module.exports.handle = (app) => {
 
         const player_data = await client.players.get(accId);
         page = 0
+        let next_page = ''
         try {
-            let next_page = await player_data.cotd(page);
+            next_page = await player_data.cotd(page);
         } catch (e) {
             res.send({ 'error': 'Player has never played COTD' });
             return
