@@ -40,8 +40,6 @@ module.exports.handle = (app) => {
 
         cache.put(`tm2020:player:${accId}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
         res.send(data)
-
-        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     })
 };
 

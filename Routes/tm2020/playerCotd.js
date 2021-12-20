@@ -40,8 +40,6 @@ module.exports.handle = (app) => {
 
         cache.put(`tm2020:player:${accId}:cotd`, JSON.stringify(cotdData), 7200000, cb) // 2 hours
         res.send(cotdData);
-
-        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     });
 };
 

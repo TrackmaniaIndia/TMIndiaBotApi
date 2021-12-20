@@ -20,8 +20,6 @@ module.exports.handle = (app) => {
 
         cache.put(`tm2020:totd`, JSON.stringify(map), 3600000, cb) // 1 hour
         res.send(map)
-
-        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     })
 };
 
