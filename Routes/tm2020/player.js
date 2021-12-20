@@ -1,6 +1,7 @@
 const { client } = require("../../tmio.js");
 const cache = require('memory-cache');
 const cb = require('../../cacheTimeoutCb.js')
+// import chalk from '../../chalk';
 
 module.exports.handle = (app) => {
     app.get('/tm2020/player/:id', async (req, res) => {
@@ -35,10 +36,12 @@ module.exports.handle = (app) => {
         }
 
         const data = player._data
-        data.clubtagraw = client.formatTMText(data.clubtag)
+        if (data.clubtag) data.clubtagraw = client.formatTMText(data.clubtag)
 
         cache.put(`tm2020:player:${accId}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
         res.send(data)
+
+        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     })
 };
 

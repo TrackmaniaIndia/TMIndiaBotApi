@@ -1,6 +1,7 @@
 const { client } = require("../../tmio.js");
 const cache = require('memory-cache');
 const cb = require('../../cacheTimeoutCb.js')
+// import chalk from 'chalk';
 
 module.exports.handle = (app) => {
     app.get('/tm2020/totd/latest', async (req, res) => {
@@ -19,6 +20,8 @@ module.exports.handle = (app) => {
 
         cache.put(`tm2020:totd`, JSON.stringify(map), 3600000, cb) // 1 hour
         res.send(map)
+
+        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     })
 };
 
