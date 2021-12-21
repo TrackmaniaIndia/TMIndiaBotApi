@@ -24,6 +24,8 @@ module.exports.handle = (app) => {
             if (e === "Invalid account ID.") {
                 res.status(400);
                 return res.send({ err: "INVALID_ACCOUNT_ID", msg: e })
+            } else {
+                return res.status(503).send({ err: e })
             }
         }
 
@@ -38,22 +40,16 @@ module.exports.handle = (app) => {
                 history.push(mmResults._data);
             });
             page += 1
-            try {
-                historyRaw = await matchmaking.history(page);
-            } catch (e) {
-                // If the Requests are over, we have to wait for a recharge
-                console.log('Waiting for API Recharge...')
-                await sleep(30000);
-            }
+            
+            historyRaw = await matchmaking.history(page);
+
         }
 
         const data = matchmaking._data;
         data.history = history;
 
         cache.put(`tm2020:player:${accId}:matchmaking`, JSON.stringify(data), 43200000, cb) // 1day
-        res.send(data);
-
-        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
+        res.send(data);        
     });
 };
 

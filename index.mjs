@@ -7,6 +7,7 @@ import glob  from 'glob'
 import { join, dirname } from "path"
 import chalk from 'chalk';
 import { fileURLToPath } from 'url'
+import ratelimitHandler from './rateLimitHandler.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -17,6 +18,7 @@ const routePath = join(__dirname, './Routes')
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.static('public'))
+app.use(ratelimitHandler);
 
 glob(`${routePath}/**/*.js`, (err, files) => {
     if(err)

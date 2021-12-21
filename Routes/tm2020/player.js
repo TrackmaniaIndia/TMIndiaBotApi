@@ -23,14 +23,23 @@ module.exports.handle = (app) => {
         //     return;
         // }
 
-        const player = await client.players.get(accId);
+        let player;
+        
+        try{
+            player = await client.players.get(accId);
+        } catch(e) {
+            if(e === 'Invalid account ID.')
+                return res.status(400).send({err: 'INAVLID_ACCOUNT_ID', msg: e})
+
+            if(e === "account not found")
+                return res.status(400).send({err: "ACCOUNT_NOT_FOUND", msg: "Their is no account with the ID provided."})
+        }
+
         const data = player._data
         if (data.clubtag) data.clubtagraw = client.formatTMText(data.clubtag)
 
         cache.put(`tm2020:player:${accId}`, JSON.stringify(data), 86400000, cb) // 1 god damn day
         res.send(data)
-
-        console.log(`Remaining Requests: ${client.ratelimit.remaining}`)
     })
 };
 
