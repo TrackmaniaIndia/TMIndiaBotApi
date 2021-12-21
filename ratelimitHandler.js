@@ -1,25 +1,25 @@
 const { client } = require('./tmio.js')
 
-module.exports = function(req, res, next) {
-	const remaining = client.ratelimit.remaining;
-	const reset = client.ratelimit.reset;
+module.exports = function (req, res, next) {
+    const remaining = client.ratelimit.remaining;
+    const reset = client.ratelimit.reset;
 
-	let resetUnixTimestamp;
-	if(reset !== null) {
-		resetUnixTimestamp = reset.getTime();
-	}
-	
-	res.on('close', () => {
-		console.log(`Remaining requests: ${remaining}`)
-	})
+    let resetUnixTimestamp;
+    if (reset !== null) {
+        resetUnixTimestamp = reset.getTime();
+    }
 
-	if(remaining === null) return next();
+    res.on('close', () => {
+        console.log(`Remaining requests: ${remaining}`)
+    })
 
-	if(remaining === 1) {
-		const dateNow = new Date().getTime()
-		return res.status(429).send({ err: "RATE_LIMITED", msg: "You have been rate limited", resetUnixTimestamp })
-		next()
-	}
+    if (remaining === null) return next();
 
-	next()
+    if (remaining === 1) {
+        const dateNow = new Date().getTime()
+        return res.status(429).send({ err: "RATE_LIMITED", msg: "You have been rate limited", resetUnixTimestamp })
+        next()
+    }
+
+    next()
 }
