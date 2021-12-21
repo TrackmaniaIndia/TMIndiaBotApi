@@ -43,4 +43,4 @@ module.exports.handle = (app) => {
     })
 };
 
-module.exports.registerdRoutes = ["/tm2020/player/:name"];
+module.exports.registerdRoutes = ["/tm2020/player/:id"];
