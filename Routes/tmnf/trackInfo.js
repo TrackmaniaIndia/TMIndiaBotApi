@@ -59,6 +59,12 @@ module.exports.handle = (app) => {
         const response = await fetch('https://tmnforever.tm-exchange.com/trackshow/' + id)
         const html = await response.text()
 
+        if(html.includes('404')) {
+            res.status(503)
+            res.send({ err: "UNAVAILABLE", msg: "TMX Is currently under maintenance or unavailable (status code 404)."});
+            return;
+        }
+
         const $ = cheerio.load(html);
         cheerioTableparser($);
 
