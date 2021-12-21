@@ -5,11 +5,8 @@ module.exports.handle = (app) => {
     app.get("/tm2020/leaderboard/:map_id", async (req, res) => {
         const map_id = req.params.map_id;
 
-        console.log('Got request')
         map_data = await client.maps.get(map_id);
         more_leaderboard = await map_data.leaderboardLoadMore();
-
-        console.log("Requests Remaining: " + client.ratelimit.remaining)
 
         let player_leaderboards = new Array
 
