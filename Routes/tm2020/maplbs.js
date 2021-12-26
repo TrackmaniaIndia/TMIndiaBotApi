@@ -3,6 +3,8 @@ const { client } = require("../../tmio.js");
 // DO NOT CACHE THIS
 module.exports.handle = (app) => {
     app.get("/tm2020/leaderboard/:map_id/:hundreds", async (req, res) => {
+        // Hundreds should be a 1 digit number
+        // so if const hundreds = 2 then it gets the top 2 hundred
         const map_id = req.params.map_id;
         const hundreds = req.params.hundreds;
 
