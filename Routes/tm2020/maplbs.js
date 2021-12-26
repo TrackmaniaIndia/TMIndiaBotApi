@@ -23,4 +23,4 @@ module.exports.handle = (app) => {
     })
 };
 
-module.exports.registerdRoutes = ["/tm2020/leaderboard/:map_id/new"];
+module.exports.registerdRoutes = ["/tm2020/leaderboard/:map_id/:hundreds"];
