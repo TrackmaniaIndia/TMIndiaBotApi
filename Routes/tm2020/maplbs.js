@@ -2,32 +2,25 @@ const { client } = require("../../tmio.js");
 
 // DO NOT CACHE THIS
 module.exports.handle = (app) => {
-    app.get("/tm2020/leaderboard/:map_id", async (req, res) => {
+    app.get("/tm2020/leaderboard/:map_id/:hundreds", async (req, res) => {
+        // Hundreds should be a 1 digit number
+        // so if const hundreds = 2 then it gets the top 2 hundred
         const map_id = req.params.map_id;
+        const hundreds = req.params.hundreds;
 
-        map_data = await client.maps.get(map_id);
-        more_leaderboard = await map_data.leaderboardLoadMore();
-
-        let player_leaderboards = new Array
-
-        for (let i = 0; i < map_data.leaderboard.length; i++) {
-            player_leaderboards.push(map_data.leaderboard[i]._data);
+        map_data = (await client.maps.get(map_id));
+        for (let i = 0; i < hundreds - 1; i++) {
+            leaderboards = await map_data.leaderboardLoadMore();
         }
 
-        for (let i = 0; i < more_leaderboard.length; i++) {
-            try {
-                let name = more_leaderboard[i]._data['player']['name']
-                player_leaderboards.push(more_leaderboard[i]._data);
-            }
-            catch {
-                continue;
-            }
-            // if(more_leaderboard._data != null)
+        let leaderboard_main = new Array
 
+        for (let i = 0; i < leaderboards.length; i++) {
+            leaderboard_main.push(leaderboards[i]._data);
         }
 
-        res.send(player_leaderboards)
+        res.send(leaderboard_main)
     })
 };
 
-module.exports.registerdRoutes = ["/tm2020/leaderboard/:map_id"];
+module.exports.registerdRoutes = ["/tm2020/leaderboard/:map_id/:hundreds"];
